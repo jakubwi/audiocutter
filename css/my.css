@@ -1,0 +1,56 @@
+html {
+    background-color: #F8F4E6;
+}
+#TitleBar {
+    -webkit-app-region: drag;
+    height: 32px;
+    color: #0E2832;
+    font-size: 15px;
+    padding: 5px;
+}
+#header {
+    text-align: center;
+    color: #E7C23D;
+    background-color: #407C94;
+}
+#done {
+    text-align: center;
+}
+#main {
+    color: black;
+    background-color: #F8F4E6;
+}
+#audioCutter {
+    color: #0E2832;
+}
+p {
+    text-align: justify;
+}
+strong {
+    color: #B82766;
+}
+button {
+    color: #E7C23D !important;
+    background-color: #407C94 !important;
+    font-weight: bold !important;
+}
+#selects {
+    background-color: #0E2832;
+    color: #E7C23D;
+}
+#tracklistBtn {
+    background-color: #0E2832 ;
+    color: #E7C23D;
+}
+#tracklist {
+    text-align: left;
+    color: grey;
+}
+#modalBody {
+    text-align: center;
+    color: white;
+    background-color: #B82766;
+}
+#btns {
+    text-align: center;
+}
