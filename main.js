@@ -10,6 +10,14 @@ const ffprobePath = require('ffprobe-static').path.replace(
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
 // FFMPEG END //
+// ytdl-core //
+const ytdl = require('ytdl-core');
+
+// usage:
+//ytdl('http://www.youtube.com/watch?v=aqz-KE-bpKQ').pipe(fs.createWriteStream('video.mp4'));
+
+
+// ytdl-core END //
 const { app, BrowserWindow, Menu,
     ipcMain, dialog, globalShortcut } = require('electron')
 const path = require('path')
@@ -17,7 +25,7 @@ const path = require('path')
 const createWindow = () => {
     const mainWindow = new BrowserWindow({
         backgroundColor: '#F8F4E6',
-        titleBarStyle: 'hidden',
+        //titleBarStyle: 'hidden',
         titleBarOverlay: {
             color: '#F8F4E6',
             symbolColor: '#0E2832',
@@ -67,8 +75,10 @@ if (process.env.NODE_ENV !== 'production') {
 app.whenReady().then(() => {
     ipcMain.handle('dialog:openFile', handleFileOpen)
     ipcMain.handle('dialog:openDirectory', handleDirOpen)
+    ipcMain.handle('dialog:openDwnldDirectory', handleDwnldDirOpen)
     ipcMain.on('set-album', handleSetAlbum)
     ipcMain.handle('set-tracklist', handleSetTracklist)
+    ipcMain.handle('set-downloadInfo', handleDownload)
     createWindow();
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
@@ -119,6 +129,72 @@ async function handleDirOpen() {
         return filePaths[0]
     }
 }
+
+// DWNLD
+// select directory to save new downloaded files
+var saveDwnldDirectory = ''
+async function handleDwnldDirOpen() {
+    const { canceled, filePaths } = await dialog.showOpenDialog(
+        { properties: ['openDirectory'] })
+    if (canceled) {
+        saveDwnldDirectory = ''
+        return 'none'
+    } else {
+        saveDwnldDirectory = filePaths[0]
+        return filePaths[0]
+    }
+}
+// DWNLD
+function handleDwnldProgress(event, progress) {
+
+}
+
+
+// DWNLD
+// get link, file name, saveDir and download
+function handleDownload(event, dwnldInfo) {
+    //unpack dwnldInfo
+    const link = dwnldInfo[0]
+    const fileName = dwnldInfo[1]
+    //check link
+    try {
+        let url1 = new URL(link);
+    } catch (e) {
+        return 'That is not correct link!'
+    }
+    //get from global variable
+    const fs = require('fs');
+    if (!fs.existsSync(saveDwnldDirectory)) {
+        return 'Save directory do not exist!'
+    };
+
+    //download audiofile
+    const stream = ytdl(link, { quality: 'highestaudio', });
+
+    let totalTime
+    ffmpeg(stream)
+        .audioBitrate(320)
+        .save(saveDwnldDirectory + '//' + fileName + `.mp3`)
+        .on('codecData', data => {
+            totalTime = parseInt(data.duration.replace(/:/g, ''))
+        })
+        .on('progress', progress => {
+            const time = parseInt(progress.timemark.replace(/:/g, ''))
+            const percent = (time / totalTime) * 100
+            console.log(percent)
+
+        })
+        .on('end', () => {
+            console.log('FFmpeg has finished.');
+        })
+        .on('error', (error) => {
+            console.error(error);
+        });
+
+    return 'success'
+    
+}
+
 // get duration of new sound files from timestamps
 // eg. difference between file 1 start time and file 2 start time
 function durationFromTimestamps(startTime, endTime) {
@@ -255,6 +331,7 @@ function checkTrack(newTracklist) {
 function ffmpegRun(newTracklist) {
     const dir = createFolder()
     newTracklist.forEach(element => {
+        let totalTime
         ffmpeg(filePathFinal)
             .seekInput(element.startTime)
             .audioBitrate('320k')
@@ -264,6 +341,14 @@ function ffmpegRun(newTracklist) {
             .outputOptions('-metadata', 'album=' + albumName)
             .duration(element.duration)
             .save(dir + "\\" + element.number + "." + element.name + '.mp3')
+            .on('codecData', data => {
+                totalTime = parseInt(data.duration.replace(/:/g, ''))
+            })
+            .on('progress', progress => {
+                const time = parseInt(progress.timemark.replace(/:/g, ''))
+                const percent = (time / totalTime) * 100
+                console.log(percent)
+            })
             .on('end', () => {
                 console.log(element.name + ' OK')
             })

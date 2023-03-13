@@ -35,7 +35,7 @@ dirButton.addEventListener('click', async () => {
 })
 
 //get tracklist and generate audio files
-//open modal (alert) if album name, save dit or file not set/choosen
+//open modal (alert) if album name, save dir or file not set/choosen
 const tracklistBtn = document.getElementById('tracklistBtn')
 const tracklistString = document.getElementById('tracklist')
 
@@ -65,4 +65,63 @@ modalCloseBtn.addEventListener('click', () => {
     modal.style.display = 'none'
 })
 
+//DWNLD
+//open download window (modal)
+const dwnldBtn = document.getElementById('dwnldHere')
+const dwnldWindow = document.getElementById('dwnldWindow')
+const dwnldWindowCloseBtn = document.getElementById('dwnldWindowX')
+
+dwnldBtn.addEventListener('click', async () => {
+    dwnldWindow.style.display = 'block'
+})
+dwnldWindowCloseBtn.addEventListener('click', () => {
+    dwnldWindow.style.display = 'none'
+})
+
+//DWNLD
+//getting download save directory
+const dwnldFolder = document.getElementById('dwnldFolder')
+const dwnldSaveFolder = document.getElementById('dwnldSaveFolder')
+dwnldFolder.addEventListener('click', async () => {
+    const dirPath = await window.electronAPI.openDwnldDir()
+    dwnldSaveFolder.innerText = dirPath
+})
+
+//DWNLD
+const dwnldFinishBtn = document.getElementById('dwnldFinishBtn')
+const dwnldLink = document.getElementById('dwnldLink')
+const dwnldName = document.getElementById('dwnldName')
+
+const dwnldDoneMsg = document.getElementById('dwnldDoneMsg')
+
+dwnldFinishBtn.addEventListener('click', async () => {
+    if (dwnldLink.value == '' || dwnldName.value == '') {
+        dwnldDoneMsg.innerText =
+            "Link or name empty. Please enter values."
+    } else {
+        const dwnldInfo = [dwnldLink.value, dwnldName.value]
+        const dwnldResponse = await window.electronAPI.setDwnldInfo(dwnldInfo)
+
+        //get messages from ffmpeg
+        if (dwnldResponse == 'success') {
+            dwnldDoneMsg.innerText = "File downloaded successfully!"
+        } else {
+            dwnldDoneMsg.innerText = dwnldResponse
+        }
+    }
+})
+
+/*//set link
+const linkString = document.getElementById('link')
+const linkButton = document.getElementById('linkBtn')
+const currentLinkName = document.getElementById('currentLinkName')
+linkButton.addEventListener('click', () => {
+    const link = linkString.value.trim()
+    window.electronAPI.setLink(link)
+    if (link == '') {
+        currentLinkName.innerText = 'none'
+    } else {
+        currentLinkName.innerText = link
+    }
+})*/
 

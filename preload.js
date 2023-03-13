@@ -5,4 +5,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     setAlbum: (album) => ipcRenderer.send('set-album', album),
     openFile: () => ipcRenderer.invoke('dialog:openFile'),
     openDir: () => ipcRenderer.invoke('dialog:openDirectory'),
+
+    setDwnldInfo: (dwnldInfo) => ipcRenderer.invoke('set-downloadInfo', dwnldInfo),
+    openDwnldDir: () => ipcRenderer.invoke('dialog:openDwnldDirectory'),
 })

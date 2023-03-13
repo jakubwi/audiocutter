@@ -88,10 +88,15 @@
                 <!-- result -->
                 <div id="done">
                     <p>
-                    <span id="ffmpegMsg"></span>
+                        <span id="ffmpegMsg"></span>
                     </p>
                 </div>
 
+                <p class="w3-tiny">
+                    If you do not have audio file you want to cut yet, you can try downloading it first here.
+                    This functionality can stop working if 'streaming site' updates their website and block this.
+                    Click <a href="#" id="dwnldHere">here</a> if you want to try anyway.
+                </p>
             </div>
 
             <div class="w3-half w3-container">
@@ -113,6 +118,52 @@ Just Doin It 1:12:51</textarea>
             </div>
         </div>
     </div>
+
+
+<!-- hidden functionality -->
+<div id="dwnldWindow" class="w3-modal">
+    <div class="w3-modal-content w3-round-xlarge" id="dwnldWindowBody">
+        <header class="w3-container">
+            <span id="dwnldWindowX" class="w3-btn w3-round-xlarge w3-display-topright">&times;</span>
+            <h2>Download audio file</h2>
+        </header>
+        <div class="w3-container">
+            <p id="dwnldSelects">
+                Choosen destination folder: <br />
+                <strong id="dwnldSaveFolder">none</strong>
+            </p>
+            <div id="btns">
+                <button class="w3-btn w3-small w3-round-xlarge" id="dwnldFolder" type="button">
+                    Choose destination folder
+                </button>
+            </div>
+            <p>
+                <input class="w3-input w3-border w3-round-xlarge"
+                       type="text" id="dwnldLink"
+                       placeholder="Enter link to video/audio stream">
+            </p>
+            <p>
+                <input class="w3-input w3-border w3-round-xlarge"
+                       type="text" id="dwnldName"
+                       placeholder="Enter file name for audio file">
+            </p>
+            <div id="btns">
+                <button class="w3-btn w3-small w3-round-xlarge"
+                        id="dwnldFinishBtn" type="button">Download!
+                </button>
+            </div>
+
+            <!-- result -->
+            <div id="dwnldDone">
+                <p>
+                    <span id="dwnldDoneMsg"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- -->
+
     <script src="./renderer.js"></script>
 </body>
 </html>
