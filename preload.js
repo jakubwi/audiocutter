@@ -8,4 +8,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
     setDwnldInfo: (dwnldInfo) => ipcRenderer.invoke('set-downloadInfo', dwnldInfo),
     openDwnldDir: () => ipcRenderer.invoke('dialog:openDwnldDirectory'),
+
+    onUpdateProgressDownload: (percent) => ipcRenderer.on('progress-download', percent),
+    onUpdateCutting: (song) => ipcRenderer.on('progress-cutting', song),
 })

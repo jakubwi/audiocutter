@@ -34,6 +34,15 @@ dirButton.addEventListener('click', async () => {
     savedir.innerText = dirPath
 })
 
+//get cutting progress updates from main.js
+const cuttingProg = document.getElementById('cuttingProg')
+const cuttingProgStrong = document.getElementById('cuttingProgStrong')
+
+window.electronAPI.onUpdateCutting((_event, value) => {
+    cuttingProg.innerText = "Done: "
+    cuttingProgStrong.innerText = value
+})
+
 //get tracklist and generate audio files
 //open modal (alert) if album name, save dir or file not set/choosen
 const tracklistBtn = document.getElementById('tracklistBtn')
@@ -53,12 +62,9 @@ tracklistBtn.addEventListener('click', async () => {
         const ffmpegMsgSpan = document.getElementById('ffmpegMsg')
         //get messages from ffmpeg
         if (response == 'done') {
-            ffmpegMsgSpan.innerText = "Files generated successfully!"
         } else {
             ffmpegMsgSpan.innerText = response.at(-1)
         }
-
-        
     }
 })
 modalCloseBtn.addEventListener('click', () => {
@@ -95,6 +101,7 @@ const dwnldName = document.getElementById('dwnldName')
 const dwnldDoneMsg = document.getElementById('dwnldDoneMsg')
 
 dwnldFinishBtn.addEventListener('click', async () => {
+    dwnldDoneMsg.innerText = ''
     if (dwnldLink.value == '' || dwnldName.value == '') {
         dwnldDoneMsg.innerText =
             "Link or name empty. Please enter values."
@@ -104,12 +111,27 @@ dwnldFinishBtn.addEventListener('click', async () => {
 
         //get messages from ffmpeg
         if (dwnldResponse == 'success') {
-            dwnldDoneMsg.innerText = "File downloaded successfully!"
         } else {
             dwnldDoneMsg.innerText = dwnldResponse
         }
     }
 })
+
+//DWNLD
+//get download progress updates from main.js
+const dwnldProg = document.getElementById('download-progress')
+const dwnldProgText = document.getElementById('dwnldProg')
+
+window.electronAPI.onUpdateProgressDownload((_event, value) => {
+    if (value == 100) {
+        dwnldProgText.innerText = "Download done."
+        dwnldProg.innerText = ''
+    } else {
+        dwnldProgText.innerText = "Download progress: "
+        dwnldProg.innerText = value + '%'
+    }
+})
+
 
 /*//set link
 const linkString = document.getElementById('link')

@@ -12,27 +12,24 @@ ffmpeg.setFfprobePath(ffprobePath);
 // FFMPEG END //
 // ytdl-core //
 const ytdl = require('ytdl-core');
-
-// usage:
-//ytdl('http://www.youtube.com/watch?v=aqz-KE-bpKQ').pipe(fs.createWriteStream('video.mp4'));
-
-
 // ytdl-core END //
+
 const { app, BrowserWindow, Menu,
     ipcMain, dialog, globalShortcut } = require('electron')
 const path = require('path')
 
+var mainWindow
 const createWindow = () => {
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         backgroundColor: '#F8F4E6',
-        //titleBarStyle: 'hidden',
+        titleBarStyle: 'hidden',
         titleBarOverlay: {
             color: '#F8F4E6',
             symbolColor: '#0E2832',
             //height: 50,
         },
         width: 800,
-        height: 700,
+        height: 800,
         minWidth: 400,
         minHeight: 200,
         icon: __dirname + '/icon.ico',
@@ -90,7 +87,6 @@ app.whenReady().then(() => {
     Menu.setApplicationMenu(mainMenu)
 });
 
-let mainWindow
 
 // set global variable album name
 var albumName = ''
@@ -145,10 +141,8 @@ async function handleDwnldDirOpen() {
     }
 }
 // DWNLD
-function handleDwnldProgress(event, progress) {
-
-}
-
+// global time to use with ffmpeg progress
+var totalTime
 
 // DWNLD
 // get link, file name, saveDir and download
@@ -170,29 +164,25 @@ function handleDownload(event, dwnldInfo) {
 
     //download audiofile
     const stream = ytdl(link, { quality: 'highestaudio', });
-
-    let totalTime
     ffmpeg(stream)
         .audioBitrate(320)
-        .save(saveDwnldDirectory + '//' + fileName + `.mp3`)
         .on('codecData', data => {
             totalTime = parseInt(data.duration.replace(/:/g, ''))
         })
         .on('progress', progress => {
             const time = parseInt(progress.timemark.replace(/:/g, ''))
             const percent = (time / totalTime) * 100
-            console.log(percent)
-
+            console.log(Math.round(percent))
+            mainWindow.webContents.send('progress-download', Math.round(percent))
         })
         .on('end', () => {
-            console.log('FFmpeg has finished.');
+            console.log('FFmpeg has finished dwnld.');
         })
         .on('error', (error) => {
             console.error(error);
-        });
-
+        })
+        .save(saveDwnldDirectory + '//' + fileName + `.mp3`)
     return 'success'
-    
 }
 
 // get duration of new sound files from timestamps
@@ -330,8 +320,8 @@ function checkTrack(newTracklist) {
 // process tracks from tracklist and generate ffmpeg command
 function ffmpegRun(newTracklist) {
     const dir = createFolder()
+    const numberOfElements = newTracklist.length
     newTracklist.forEach(element => {
-        let totalTime
         ffmpeg(filePathFinal)
             .seekInput(element.startTime)
             .audioBitrate('320k')
@@ -339,22 +329,19 @@ function ffmpegRun(newTracklist) {
             .outputOptions('-metadata', 'title=' + element.name)
             .outputOptions('-metadata', 'track=' + element.number)
             .outputOptions('-metadata', 'album=' + albumName)
-            .duration(element.duration)
-            .save(dir + "\\" + element.number + "." + element.name + '.mp3')
+            .duration(element.duration)            
             .on('codecData', data => {
                 totalTime = parseInt(data.duration.replace(/:/g, ''))
             })
-            .on('progress', progress => {
-                const time = parseInt(progress.timemark.replace(/:/g, ''))
-                const percent = (time / totalTime) * 100
-                console.log(percent)
-            })
             .on('end', () => {
-                console.log(element.name + ' OK')
+                console.log(element.name + ' done')
+                const update = element.number + '/' + numberOfElements
+                mainWindow.webContents.send('progress-cutting', update)
             })
             .on('error', (err) => {
                 console.log(element.name + " " + err.message)
             })
+            .save(dir + "\\" + element.number + "." + element.name + '.mp3')
     })
     return 'done'
 }
