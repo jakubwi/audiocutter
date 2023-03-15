@@ -131,19 +131,3 @@ window.electronAPI.onUpdateProgressDownload((_event, value) => {
         dwnldProg.innerText = value + '%'
     }
 })
-
-
-/*//set link
-const linkString = document.getElementById('link')
-const linkButton = document.getElementById('linkBtn')
-const currentLinkName = document.getElementById('currentLinkName')
-linkButton.addEventListener('click', () => {
-    const link = linkString.value.trim()
-    window.electronAPI.setLink(link)
-    if (link == '') {
-        currentLinkName.innerText = 'none'
-    } else {
-        currentLinkName.innerText = link
-    }
-})*/
-

@@ -19,9 +19,9 @@
     <div class="w3-row">
         <div class="w3-twothird">
             <div class="w3-panel w3-round-xlarge w3-margin" id="selects">
-                Choosen album name: <strong id="currentAlbumName">none</strong><br />
-                Choosen file name: <strong id="filepath">none</strong><br />
-                Choosen save directory: <strong id="savedir">none</strong>
+                New album name: <strong id="currentAlbumName">none</strong><br />
+                Audio file: <strong id="filepath">none</strong><br />
+                Save directory: <strong id="savedir">none</strong>
             </div>
         </div>
         <div class="w3-third">
@@ -61,25 +61,20 @@
                     and then click the 'Cut!' button at the top
                     to start the process!
                 </p>
-
-                <div id="btns">
-                    <button class="w3-btn w3-small w3-round-xlarge" id="mp3" type="button">
-                        Choose audio file
-                    </button>
-                    <button class="w3-btn w3-small w3-round-xlarge"
-                            id="albumBtn" type="button">
-                        Set album name
-                    </button>
-                </div>
-
                 <p>
                     <input class="w3-input w3-border w3-round-xlarge"
                            type="text" id="album"
-                           placeholder="Enter album name and click button above">
+                           placeholder="Enter album name and click button below">
                 </p>
-
                 <div id="btns">
-                    <button class="w3-btn w3-small w3-round-xlarge"
+                    <button class="w3-btn w3-small w3-round-xlarge w3-section"
+                            id="albumBtn" type="button">
+                        Set new album name
+                    </button>
+                    <button class="w3-btn w3-small w3-round-xlarge w3-section" id="mp3" type="button">
+                        Choose audio file
+                    </button>
+                    <button class="w3-btn w3-small w3-round-xlarge w3-section"
                             id="dirBtn" type="button">
                         Choose save directory
                     </button>
@@ -107,16 +102,16 @@
                     Timestamps can be written after or before name.
                 </p>
                 <textarea class="w3-input w3-border w3-round-xlarge" id="tracklist" rows="10" cols="50">
-Betrayal At Club Low - Theme 0:00
-Outside The Club 6:38
-Take Your Marks 14:53
-Nite Cut 23:08
-Raze 31:26
-Zone VIP 39:39
-Naive Console 47:59
-The Hot Box 56:12
-Spumoni Gardens 1:04:28
-Just Doin It 1:12:51</textarea>
+The Adventure Begins 0:00
+Exploring the Wilderness 2:34
+Mystical Caves 5:47
+Ancient Ruins 8:58
+City of the Lost 11:23
+Eerie Forest 14:52
+Boss Battle 17:21
+Kingdom in Chaos 20:03
+Oceanic Depths 23:14
+Final Showdown 26:49</textarea>
             </div>
         </div>
     </div>
@@ -131,7 +126,7 @@ Just Doin It 1:12:51</textarea>
         </header>
         <div class="w3-container">
             <p id="dwnldSelects">
-                Choosen destination folder: <br />
+                Destination folder: <br />
                 <strong id="dwnldSaveFolder">none</strong>
             </p>
             <div id="btns">
